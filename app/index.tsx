@@ -14,7 +14,7 @@ export default function StartPage() {
   }
 
   if (user) {
-    return <Redirect href="/(tabs)/(client)/home" />;
+    return <Redirect href="/(tabs)/home" />;
   }
-  return <Redirect href="/(tabs)/(introduce)" />;
+  return <Redirect href="/(introduce)" />;
 }

@@ -32,6 +32,22 @@ export default function LoginScreen() {
     password: "",
   });
 
+  const validateField = (field: string, value: any) => {
+    switch (field) {
+      case "email":
+        if (!value.trim()) return "Email không được để trống!";
+        const emailRegex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
+        if (!emailRegex.test(value)) return "Email không hợp lệ!";
+        return "";
+      case "password":
+        if (!value.trim()) return "Mật khẩu không được để trống!";
+        if (value.length < 6) return "Mật khẩu phải ít nhất 6 ký tự!";
+        return "";
+      default:
+        return "";
+    }
+  };
+
   const { mutate: loginMutation, isPending } = useMutation({
     mutationFn: loginUser,
     mutationKey: ["loginUser"],
@@ -41,6 +57,7 @@ export default function LoginScreen() {
         "accessToken",
         JSON.stringify(res.data.accessToken)
       );
+      await AsyncStorage.setItem("refreshToken", res.data.refreshToken);
       await AsyncStorage.setItem(
         "user",
         JSON.stringify({
@@ -51,7 +68,7 @@ export default function LoginScreen() {
           phoneNumber: res.data.phoneNumber,
         })
       );
-      router.push("/(tabs)/(client)/home");
+      router.replace("/home");
     },
     onError: (error: any) => {
       if (error.response && error.response.data) {
@@ -72,7 +89,7 @@ export default function LoginScreen() {
       } else {
         Alert.alert(
           "Thất bại!",
-          "Email hoặc mật khẩu không đúng."
+          "Đăng nhập thất bại!"
         );
       }
     },
@@ -91,7 +108,23 @@ export default function LoginScreen() {
       ...inputValue,
       [field]: value,
     });
+    const errorMessage = validateField(field, value);
+    setError(prev => ({ ...prev, [field]: errorMessage }));
   };
+
+  const hanldeForgotPassword = () => {
+    if (!inputValue.email) {
+      Alert.alert("Lỗi", "Vui lòng nhập email trước khi tiếp tục.");
+      return;
+    }
+
+    router.push({
+      pathname: "/forgot-password",
+      params: {
+        email: inputValue.email
+      }
+    })
+  }
 
   return (
     <SafeAreaView className="flex-1 bg-white">
@@ -108,10 +141,10 @@ export default function LoginScreen() {
 
           {/* Title */}
           <Text className="text-[28px] font-bold text-[#333] mb-2">
-            Let's get you Login!
+            Đăng nhập tài khoản
           </Text>
           <Text className="text-base text-[#888] mb-6">
-            Enter your information below
+            Vui lòng nhập các thông tin của bạn.
           </Text>
 
           {/* Social Login */}
@@ -139,24 +172,20 @@ export default function LoginScreen() {
           </View>
 
           {/* Email */}
-          <View className="flex-row items-center bg-[#F9F9F9] border border-[#E0E0E0] rounded-lg px-3">
-            <Feather name="mail" size={20} color="#888" />
-            <TextInput
-              className="flex-1 h-[50px] text-[16px] text-[#333] ml-2"
-              placeholder="Nhập email"
-              placeholderTextColor="#AAA"
-              onChangeText={(text) => handleChange("email", text)}
-              keyboardType="email-address"
-              autoCapitalize="none"
-              value={inputValue.email}
-            />
-          </View>
-          {error.email && (
-            <Text className="text-red-500 text-md mt-2">{error.email}</Text>
-          )}
-
-          {/* Password */}
-          <View className="flex-row items-center bg-[#F9F9F9] border border-[#E0E0E0] rounded-lg px-3 mt-2">
+          <View className="flex-row gap-3">
+            <View className="flex-row items-center bg-[#F9F9F9] border border-[#E0E0E0] rounded-lg px-3 flex-1">
+              <Feather name="mail" size={20} color="#888" />
+              <TextInput
+                className="flex-1 h-[50px] text-[16px] text-[#333] ml-2"
+                placeholder="Nhập email"
+                placeholderTextColor="#AAA"
+                onChangeText={(text) => handleChange("email", text)}
+                keyboardType="email-address"
+                autoCapitalize="none"
+                value={inputValue.email}
+              />
+            </View>
+          <View className="flex-row flex-1 items-center bg-[#F9F9F9] border border-[#E0E0E0] rounded-lg px-3">
             <Feather name="lock" size={20} color="#888" />
             <TextInput
               className="flex-1 h-[50px] text-[16px] text-[#333] ml-2"
@@ -174,12 +203,15 @@ export default function LoginScreen() {
               />
             </TouchableOpacity>
           </View>
-          {error.password && (
-            <Text className="text-red-500 text-md mt-2">{error.password}</Text>
-          )}
+          </View>
+          {/* {error.email ? <Text className="text-red-500 mt-1">{error.email}</Text> : null} */}
+
+          {/* Password */}
+          
+          {/* {error.password ? <Text className="text-red-500 mt-1">{error.password}</Text> : null} */}
 
           {/* Forgot password */}
-          <TouchableOpacity>
+          <TouchableOpacity onPress={hanldeForgotPassword}>
             <Text className="text-sm text-[#4285F4] text-right mb-6">
               Quên mật khẩu?
             </Text>
@@ -208,7 +240,7 @@ export default function LoginScreen() {
           <View className="flex-row justify-center items-center mt-4">
             <Text className="text-sm text-[#888]">Chưa có tài khoản? </Text>
             <TouchableOpacity
-              onPress={() => router.push("/(tabs)/(auth)/register")}
+              onPress={() => router.push("/(auth)/register")}
             >
               <Text className="text-sm text-[#4285F4] font-bold">
                 Đăng ký tại đây

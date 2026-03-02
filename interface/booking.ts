@@ -1,7 +1,8 @@
 export enum Status{
   PENDING = "PENDING",
   CONFIRMED = "CONFIRMED",
-  CANCELLED = "CANCELLED"
+  CANCELLED = "CANCELLED",
+  CHECKED_OUT = "CHECKED_OUT"
 };
 export interface Booking {
   id: number;

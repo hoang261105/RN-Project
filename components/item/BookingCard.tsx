@@ -1,19 +1,64 @@
+import { cancelBooking } from "@/apis/payment.api";
 import { useReviews } from "@/hooks/useReviews";
 import { BookingResponse, Status } from "@/interface/booking";
 import { Ionicons } from "@expo/vector-icons";
+import { useMutation, useQueryClient } from "@tanstack/react-query";
 import { format } from "date-fns";
-import { Image, Text, TouchableOpacity, View } from "react-native";
+import { useRouter } from "expo-router";
+import { Alert, Image, Text, TouchableOpacity, View } from "react-native";
 import StarRating from "./StarRating";
 
 // --- Component con: Thẻ Đặt phòng ---
 export default function BookingCard({ booking }: { booking: BookingResponse }) {
   const { data: reviews } = useReviews(booking.hotelId, booking.roomId);
+  const queryClient = useQueryClient();
+  const router = useRouter();
 
   const averageRating =
     reviews && reviews.length > 0
       ? reviews.reduce((sum: number, r: any) => sum + r.rating, 0) /
         reviews.length
       : 0;
+
+  const { mutate: cancelBookingMutation } = useMutation({
+    mutationFn: async (bookingId: number) => {
+      const response = await cancelBooking(bookingId);
+      return response.data;
+    },
+    mutationKey: ["cancelBooking"],
+    onSuccess: () => {
+      Alert.alert("Thành công", "Hủy đặt phòng thành công!");
+      queryClient.invalidateQueries({ queryKey: ["bookings"] });
+    },
+    onError: () => {
+      Alert.alert("Lỗi", "Hủy đặt phòng thất bại. Vui lòng thử lại.");
+    },
+  });
+
+  const handleClick = (id: number, status: Status) => {
+    if (status === Status.PENDING) {
+      Alert.alert("Xác nhận", "Bạn có chắc chắn muốn hủy đặt phòng này?", [
+        {
+          text: "Hủy",
+          style: "cancel",
+        },
+        {
+          text: "Xác nhận",
+          onPress: () => {
+            cancelBookingMutation(id);
+          },
+        },
+      ]);
+    } else if (status === Status.CHECKED_OUT) {
+      router.push({
+        pathname: "/(tabs)/home/room/roomDetail/review",
+        params: {
+          roomId: booking.roomId,
+          hotelId: booking.hotelId,
+        },
+      });
+    }
+  };
 
   return (
     <View className="bg-white rounded-2xl border border-gray-100 shadow-md p-4 mb-5">
@@ -22,7 +67,8 @@ export default function BookingCard({ booking }: { booking: BookingResponse }) {
         Booking ID: {booking.bookingId}
       </Text>
       <Text className="text-sm text-gray-500 mb-4">
-       Ngày đặt phòng: {format(new Date(booking.checkInDate), "dd/MM/yyyy")} - {format(new Date(booking.checkOutDate), "dd/MM/yyyy")}
+        Ngày đặt phòng: {format(new Date(booking.checkInDate), "dd/MM/yyyy")} -{" "}
+        {format(new Date(booking.checkOutDate), "dd/MM/yyyy")}
       </Text>
 
       {/* Hàng 2: Chi tiết (Ảnh + Thông tin) */}
@@ -55,13 +101,22 @@ export default function BookingCard({ booking }: { booking: BookingResponse }) {
       {/* Hàng 3: Nút bấm */}
       <View className="flex-row justify-between space-x-3">
         {/* Nút Cancel */}
-        <TouchableOpacity className="flex-1 bg-gray-100 py-3 rounded-lg items-center">
+        <TouchableOpacity
+          className="flex-1 bg-gray-100 py-3 rounded-lg items-center"
+          disabled={
+            booking.status == Status.CONFIRMED ||
+            booking.status === Status.CANCELLED
+          }
+          onPress={() => handleClick(booking.bookingId, booking.status)}
+        >
           <Text className="text-base font-bold text-gray-700">
             {booking.status === Status.PENDING
               ? "Hủy đặt phòng"
               : booking.status === Status.CONFIRMED
-                ? "Đã đặt"
-                : "Đã hủy"}
+              ? "Đã đặt"
+              : booking.status === Status.CHECKED_OUT
+              ? "Viết đánh giá"
+              : "Đã hủy"}
           </Text>
         </TouchableOpacity>
         {/* Nút View Details */}
@@ -69,7 +124,7 @@ export default function BookingCard({ booking }: { booking: BookingResponse }) {
           <TouchableOpacity className="flex-1 bg-blue-600 py-3 rounded-lg items-center">
             <Text className="text-base font-bold text-white">Xem chi tiết</Text>
           </TouchableOpacity>
-        ) : booking.status === Status.CONFIRMED ? (
+        ) : booking.status === Status.CHECKED_OUT ? (
           <TouchableOpacity className="flex-1 bg-blue-600 py-3 rounded-lg items-center">
             <Text className="text-base font-bold text-white">Đặt lại</Text>
           </TouchableOpacity>

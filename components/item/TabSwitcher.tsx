@@ -1,5 +1,5 @@
 import { Status } from "@/interface/booking";
-import { Text, TouchableOpacity, View } from "react-native";
+import { StyleSheet, Text, TouchableOpacity, View } from "react-native";
 
 // --- Component con: Chuyển Tab ---
 const TabSwitcher = ({
@@ -10,60 +10,65 @@ const TabSwitcher = ({
   setActiveTab: (tab: Status) => void;
 }) => {
   return (
-    <View className="flex-row bg-gray-100 rounded-full p-1 mx-5 mb-5">
-      {/* Tab Upcoming */}
-      <TouchableOpacity
-        onPress={() => setActiveTab(Status.PENDING)}
-        className={`flex-1 py-3 rounded-full ${
-          activeTab === Status.PENDING
-            ? "bg-blue-600 shadow-md"
-            : "bg-transparent"
-        }`}
-      >
-        <Text
-          className={`text-base font-bold text-center ${
-            activeTab === Status.PENDING ? "text-white" : "text-gray-500"
-          }`}
-        >
-          Đang chờ
-        </Text>
-      </TouchableOpacity>
-      {/* Tab Past */}
-      <TouchableOpacity
-        onPress={() => setActiveTab(Status.CONFIRMED)}
-        className={`flex-1 py-3 rounded-full ${
-          activeTab === Status.CONFIRMED
-            ? "bg-blue-600 shadow-md"
-            : "bg-transparent"
-        }`}
-      >
-        <Text
-          className={`text-base font-bold text-center ${
-            activeTab === Status.CONFIRMED ? "text-white" : "text-gray-500"
-          }`}
-        >
-          Đã đặt
-        </Text>
-      </TouchableOpacity>
-
-      <TouchableOpacity
-        onPress={() => setActiveTab(Status.CANCELLED)}
-        className={`flex-1 py-3 rounded-full ${
-          activeTab === Status.CANCELLED
-            ? "bg-blue-600 shadow-md"
-            : "bg-transparent"
-        }`}
-      >
-        <Text
-          className={`text-base font-bold text-center ${
-            activeTab === Status.CANCELLED ? "text-white" : "text-gray-500"
-          }`}
-        >
-          Đã hủy
-        </Text>
-      </TouchableOpacity>
+    <View style={styles.container}>
+      {Object.values(Status).map((status) => {
+        const isActive = activeTab === status;
+        return (
+          <TouchableOpacity
+            key={status}
+            onPress={() => setActiveTab(status)}
+            style={[styles.tabButton, isActive && styles.tabButtonActive]}
+          >
+            <Text style={[styles.tabText, isActive && styles.tabTextActive]}>
+              {status === Status.PENDING
+                ? "Đang chờ"
+                : status === Status.CONFIRMED
+                ? "Đã đặt"
+                : status === Status.CANCELLED
+                ? "Đã hủy"
+                : "Đã trả phòng"}
+            </Text>
+          </TouchableOpacity>
+        );
+      })}
     </View>
   );
 };
 
-export default TabSwitcher
+export default TabSwitcher;
+
+const styles = StyleSheet.create({
+  container: {
+    flexDirection: "row",
+    backgroundColor: "#F3F4F6", // gray-100
+    borderRadius: 9999,
+    padding: 2,
+    marginHorizontal: 20,
+    marginBottom: 20,
+  },
+  tabButton: {
+    flex: 1,
+    paddingVertical: 12,
+    borderRadius: 9999,
+    backgroundColor: "transparent",
+    alignItems: "center",
+    justifyContent: "center",
+  },
+  tabButtonActive: {
+    backgroundColor: "#2563EB", // blue-600
+    shadowColor: "#000",
+    shadowOffset: { width: 0, height: 2 },
+    shadowOpacity: 0.25,
+    shadowRadius: 3.84,
+    elevation: 5,
+  },
+  tabText: {
+    fontSize: 16,
+    fontWeight: "bold",
+    color: "#6B7280", // gray-500
+    textAlign: "center",
+  },
+  tabTextActive: {
+    color: "#FFFFFF", // white
+  },
+});

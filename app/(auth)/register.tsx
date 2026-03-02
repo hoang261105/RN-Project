@@ -41,65 +41,97 @@ export default function RegisterScreen() {
     email: "",
     password: "",
     phoneNumber: "",
+    dateOfBirth: "",
   });
+
+  const validateField = (field: string, value: any) => {
+    switch (field) {
+      case "fullName":
+        if (!value.trim()) return "Họ tên không được để trống!";
+        if (value.trim().length < 3) return "Họ tên phải ít nhất 3 ký tự!";
+        return "";
+      case "email":
+        if (!value.trim()) return "Email không được để trống!";
+        const emailRegex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
+        if (!emailRegex.test(value)) return "Email không hợp lệ!";
+        return "";
+      case "phoneNumber":
+        if (!value.trim()) return "Số điện thoại không được để trống!";
+        const phoneRegex = /^[0-9]{9,11}$/;
+        if (!phoneRegex.test(value)) return "Số điện thoại không hợp lệ!";
+        return "";
+      case "password":
+        if (!value.trim()) return "Mật khẩu không được để trống!";
+        if (value.length < 6) return "Mật khẩu phải ít nhất 6 ký tự!";
+        return "";
+      case "dateOfBirth":
+        if (!value) return "Ngày sinh không được để trống!";
+        if (value > new Date()) return "Ngày sinh không được lớn hơn hôm nay!";
+        return "";
+      default:
+        return "";
+    }
+  };
 
   const { mutate: registerMutation, isPending } = useMutation({
     mutationFn: registerUser,
     mutationKey: ["registerUser"],
     onSuccess: () => {
       Alert.alert("Thành công!", "Đăng ký thành công!");
-      router.push("/(tabs)/(auth)/login");
+      router.push("/(auth)/login");
     },
     onError: (error: any) => {
       if (error.response && error.response.data) {
         const responseData = error.response.data;
-
         if (responseData.error) {
-          const newErrorState = {
+          setError({
             fullName: responseData.error.fullName || "",
             email: responseData.error.email || "",
             password: responseData.error.password || "",
             phoneNumber: responseData.error.phoneNumber || "",
-          };
-
-          setError(newErrorState);
+            dateOfBirth: "",
+          });
         } else {
-          const message =
-            responseData.message || "Đã xảy ra lỗi, vui lòng thử lại!";
-          Alert.alert("Thất bại!", message);
+          Alert.alert("Thất bại!", responseData.message || "Đã xảy ra lỗi!");
         }
       } else {
-        Alert.alert(
-          "Lỗi mạng!",
-          error.message || "Không thể kết nối đến máy chủ."
-        );
+        Alert.alert("Lỗi mạng!", error.message || "Không thể kết nối đến máy chủ.");
       }
     },
   });
 
-  const onChange = (event: any, selectedDate?: Date) => {
+  const handleChange = (field: string, value: any) => {
+    setInputValue(prev => ({ ...prev, [field]: value }));
+    const errorMessage = validateField(field, value);
+    setError(prev => ({ ...prev, [field]: errorMessage }));
+  };
+
+  const handleDateChange = (event: any, selectedDate?: Date) => {
     setShow(Platform.OS === "ios");
     if (selectedDate) {
       setDate(selectedDate);
-      setInputValue({ ...inputValue, dateOfBirth: selectedDate });
+      handleChange("dateOfBirth", selectedDate);
     }
   };
 
   const handleSubmit = () => {
-    setError({
-      fullName: "",
-      email: "",
-      password: "",
-      phoneNumber: "",
-    });
-    registerMutation(inputValue);
-  };
+    const fullNameError = validateField("fullName", inputValue.fullName);
+    const emailError = validateField("email", inputValue.email);
+    const phoneError = validateField("phoneNumber", inputValue.phoneNumber);
+    const passwordError = validateField("password", inputValue.password);
+    const dobError = validateField("dateOfBirth", inputValue.dateOfBirth);
 
-  const handleChange = (field: string, value: any) => {
-    setInputValue({
-      ...inputValue,
-      [field]: value,
+    setError({
+      fullName: fullNameError,
+      email: emailError,
+      phoneNumber: phoneError,
+      password: passwordError,
+      dateOfBirth: dobError,
     });
+
+    if (fullNameError || emailError || phoneError || passwordError || dobError) return;
+
+    registerMutation(inputValue);
   };
 
   return (
@@ -128,58 +160,49 @@ export default function RegisterScreen() {
 
             {/* Title */}
             <Text className="text-2xl font-bold text-[#000] mb-2">
-              Register Now!
+              Đăng ký tài khoản
             </Text>
             <Text className="text-[#888] text-base mb-8">
-              Enter your information below
+              Vui lòng nhập các thông tin của bạn.
             </Text>
 
             {/* Name */}
             <View className="mb-4">
               <Text className="text-[#5B7FFF] text-sm mb-1">Họ tên</Text>
               <TextInput
-                placeholder="Curtis Weaver"
-                onChangeText={(text) => handleChange("fullName", text)}
-                placeholderTextColor="#000"
+                placeholder="Nhập họ tên"
+                value={inputValue.fullName}
+                onChangeText={text => handleChange("fullName", text)}
                 className="border border-[#5B7FFF] rounded-xl px-4 py-3 text-base text-[#000]"
               />
-              {error.fullName && (
-                <Text className="text-red-500 text-md mt-2">
-                  {error.fullName}
-                </Text>
-              )}
+              {error.fullName ? <Text className="text-red-500 mt-1">{error.fullName}</Text> : null}
             </View>
 
             {/* Email */}
             <View className="mb-4">
               <Text className="text-[#5B7FFF] text-sm mb-1">Email</Text>
               <TextInput
-                placeholder="curtis.weaver@example.com"
-                onChangeText={(text) => handleChange("email", text)}
-                placeholderTextColor="#000"
+                placeholder="Nhập email"
+                value={inputValue.email}
+                onChangeText={text => handleChange("email", text)}
                 keyboardType="email-address"
+                autoCapitalize="none"
                 className="border border-[#5B7FFF] rounded-xl px-4 py-3 text-base text-[#000]"
               />
-              {error.email && (
-                <Text className="text-red-500 text-md mt-2">{error.email}</Text>
-              )}
+              {error.email ? <Text className="text-red-500 mt-1">{error.email}</Text> : null}
             </View>
 
             {/* Mobile */}
             <View className="mb-4">
               <Text className="text-[#5B7FFF] text-sm mb-1">Số điện thoại</Text>
               <TextInput
-                placeholder="(209) 555-0104"
-                onChangeText={(text) => handleChange("phoneNumber", text)}
+                placeholder="Nhập số điện thoại"
+                value={inputValue.phoneNumber}
+                onChangeText={text => handleChange("phoneNumber", text)}
                 keyboardType="phone-pad"
-                placeholderTextColor="#000"
                 className="border border-[#5B7FFF] rounded-xl px-4 py-3 text-base text-[#000]"
               />
-              {error.phoneNumber && (
-                <Text className="text-red-500 text-md mt-2">
-                  {error.phoneNumber}
-                </Text>
-              )}
+              {error.phoneNumber ? <Text className="text-red-500 mt-1">{error.phoneNumber}</Text> : null}
             </View>
 
             {/* Date of Birth */}
@@ -200,28 +223,24 @@ export default function RegisterScreen() {
                   value={date}
                   mode="date"
                   display={Platform.OS === "ios" ? "spinner" : "default"}
-                  onChange={onChange}
+                  onChange={handleDateChange}
                   maximumDate={new Date()}
                 />
               )}
+              {error.dateOfBirth ? <Text className="text-red-500 mt-1">{error.dateOfBirth}</Text> : null}
             </View>
 
             {/* Mật khẩu */}
             <View className="mb-4">
               <Text className="text-[#5B7FFF] text-sm mb-1">Mật khẩu</Text>
               <TextInput
-                placeholder="Mật khẩu"
-                onChangeText={(text) => handleChange("password", text)}
-                placeholderTextColor="#000"
-                secureTextEntry={true}
+                placeholder="Nhập mật khẩu"
                 value={inputValue.password}
+                onChangeText={text => handleChange("password", text)}
+                secureTextEntry
                 className="border border-[#5B7FFF] rounded-xl px-4 py-3 text-base text-[#000]"
               />
-              {error.password && (
-                <Text className="text-red-500 text-md mt-2">
-                  {error.password}
-                </Text>
-              )}
+              {error.password ? <Text className="text-red-500 mt-1">{error.password}</Text> : null}
             </View>
 
             {/* Gender */}
@@ -289,7 +308,7 @@ export default function RegisterScreen() {
             <View className="flex-row justify-center">
               <Text className="text-[#888] text-base">Đã có tài khoản? </Text>
               <TouchableOpacity
-                onPress={() => router.push("/(tabs)/(auth)/login")}
+                onPress={() => router.push("/(auth)/login")}
               >
                 <Text className="text-[#5B7FFF] font-semibold text-base">
                   Đăng nhập
