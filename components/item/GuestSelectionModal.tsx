@@ -116,7 +116,6 @@ export default function GuestSelectionModal({
                 decrementDisabled={adults === 1}
               />
 
-              {/* Hàng Trẻ em */}
               <GuestCounterRow
                 title="Children"
                 subtitle="Ages 2-13"
