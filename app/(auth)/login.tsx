@@ -135,7 +135,6 @@ export default function LoginScreen() {
             <Image source={require("../../assets/images/live-green.png")} />
           </View>
 
-          {/* Title */}
           <Text className="text-[28px] font-bold text-[#333] mb-2">
             Đăng nhập tài khoản
           </Text>
