@@ -78,7 +78,6 @@ export default function BookingCard({ booking }: { booking: BookingResponse }) {
           className="w-20 h-20 rounded-lg"
         />
         <View className="ml-4 flex-1">
-          {/* Rating */}
           <View className="flex-row items-center">
             <StarRating rating={averageRating} size={20} />
             <Text className="ml-2 text-sm text-gray-600">
@@ -113,10 +112,10 @@ export default function BookingCard({ booking }: { booking: BookingResponse }) {
             {booking.status === Status.PENDING
               ? "Hủy đặt phòng"
               : booking.status === Status.CONFIRMED
-              ? "Đã đặt"
-              : booking.status === Status.CHECKED_OUT
-              ? "Viết đánh giá"
-              : "Đã hủy"}
+                ? "Đã đặt"
+                : booking.status === Status.CHECKED_OUT
+                  ? "Viết đánh giá"
+                  : "Đã hủy"}
           </Text>
         </TouchableOpacity>
         {/* Nút View Details */}
