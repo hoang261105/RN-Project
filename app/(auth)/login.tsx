@@ -142,7 +142,6 @@ export default function LoginScreen() {
             Vui lòng nhập các thông tin của bạn.
           </Text>
 
-          {/* Social Login */}
           <View className="flex-row justify-between mb-7">
             <TouchableOpacity className="flex-1 flex-row items-center justify-center py-3.5 rounded-lg border border-[#E0E0E0] mx-2">
               <FontAwesome name="google" size={22} color="#DB4437" />
