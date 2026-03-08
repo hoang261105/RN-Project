@@ -25,7 +25,6 @@ export default function PaymentSuccessModal({
             {/* Grabber */}
             <View className="w-12 h-1.5 bg-gray-300 rounded-full self-center mb-5" />
 
-            {/* Icon (2 vòng tròn lồng nhau) */}
             <View className="w-24 h-24 rounded-full bg-blue-100 items-center justify-center">
               <View className="w-16 h-16 rounded-full bg-blue-600 items-center justify-center shadow-lg">
                 <Ionicons name="checkmark-sharp" size={40} color="white" />
