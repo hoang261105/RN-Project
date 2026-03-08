@@ -31,7 +31,6 @@ export default function PaymentSuccessModal({
               </View>
             </View>
 
-            {/* Text */}
             <Text className="text-2xl font-bold text-gray-900 mt-6">
               Payment Received Successfully
             </Text>
