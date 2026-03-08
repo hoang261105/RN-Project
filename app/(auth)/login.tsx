@@ -55,7 +55,7 @@ export default function LoginScreen() {
       Alert.alert("Thành công", "Đăng nhập thành công!");
       await AsyncStorage.setItem(
         "accessToken",
-        JSON.stringify(res.data.accessToken)
+        JSON.stringify(res.data.accessToken),
       );
       await AsyncStorage.setItem("refreshToken", res.data.refreshToken);
       await AsyncStorage.setItem(
@@ -66,7 +66,7 @@ export default function LoginScreen() {
           email: res.data.email,
           avatar: res.data.avatar,
           phoneNumber: res.data.phoneNumber,
-        })
+        }),
       );
       router.replace("/home");
     },
@@ -77,7 +77,7 @@ export default function LoginScreen() {
         if (responseData.error) {
           const newErrorState = {
             email: responseData.error.email || "",
-            password: responseData.error.password || ""
+            password: responseData.error.password || "",
           };
 
           setError(newErrorState);
@@ -87,10 +87,7 @@ export default function LoginScreen() {
           Alert.alert("Thất bại!", message);
         }
       } else {
-        Alert.alert(
-          "Thất bại!",
-          "Đăng nhập thất bại!"
-        );
+        Alert.alert("Thất bại!", "Đăng nhập thất bại!");
       }
     },
   });
@@ -98,8 +95,8 @@ export default function LoginScreen() {
   const handleLogin = () => {
     setError({
       email: "",
-      password: ""
-    })
+      password: "",
+    });
     loginMutation(inputValue);
   };
 
@@ -109,7 +106,7 @@ export default function LoginScreen() {
       [field]: value,
     });
     const errorMessage = validateField(field, value);
-    setError(prev => ({ ...prev, [field]: errorMessage }));
+    setError((prev) => ({ ...prev, [field]: errorMessage }));
   };
 
   const hanldeForgotPassword = () => {
@@ -121,10 +118,10 @@ export default function LoginScreen() {
     router.push({
       pathname: "/forgot-password",
       params: {
-        email: inputValue.email
-      }
-    })
-  }
+        email: inputValue.email,
+      },
+    });
+  };
 
   return (
     <SafeAreaView className="flex-1 bg-white">
@@ -134,7 +131,6 @@ export default function LoginScreen() {
         className="flex-1"
       >
         <View className="flex-1 justify-center px-6">
-          {/* Logo */}
           <View className="items-center mb-5 px-[90px] w-[100px] h-[100px] bg-[#E6F0FF] justify-center self-start rounded-xl overflow-hidden">
             <Image source={require("../../assets/images/live-green.png")} />
           </View>
@@ -185,29 +181,29 @@ export default function LoginScreen() {
                 value={inputValue.email}
               />
             </View>
-          <View className="flex-row flex-1 items-center bg-[#F9F9F9] border border-[#E0E0E0] rounded-lg px-3">
-            <Feather name="lock" size={20} color="#888" />
-            <TextInput
-              className="flex-1 h-[50px] text-[16px] text-[#333] ml-2"
-              placeholder="Nhập mật khẩu"
-              placeholderTextColor="#AAA"
-              onChangeText={(text) => handleChange("password", text)}
-              secureTextEntry={secureEntry}
-              value={inputValue.password}
-            />
-            <TouchableOpacity onPress={() => setSecureEntry(!secureEntry)}>
-              <Feather
-                name={secureEntry ? "eye-off" : "eye"}
-                size={20}
-                color="#888"
+            <View className="flex-row flex-1 items-center bg-[#F9F9F9] border border-[#E0E0E0] rounded-lg px-3">
+              <Feather name="lock" size={20} color="#888" />
+              <TextInput
+                className="flex-1 h-[50px] text-[16px] text-[#333] ml-2"
+                placeholder="Nhập mật khẩu"
+                placeholderTextColor="#AAA"
+                onChangeText={(text) => handleChange("password", text)}
+                secureTextEntry={secureEntry}
+                value={inputValue.password}
               />
-            </TouchableOpacity>
-          </View>
+              <TouchableOpacity onPress={() => setSecureEntry(!secureEntry)}>
+                <Feather
+                  name={secureEntry ? "eye-off" : "eye"}
+                  size={20}
+                  color="#888"
+                />
+              </TouchableOpacity>
+            </View>
           </View>
           {/* {error.email ? <Text className="text-red-500 mt-1">{error.email}</Text> : null} */}
 
           {/* Password */}
-          
+
           {/* {error.password ? <Text className="text-red-500 mt-1">{error.password}</Text> : null} */}
 
           {/* Forgot password */}
@@ -239,9 +235,7 @@ export default function LoginScreen() {
           {/* Register */}
           <View className="flex-row justify-center items-center mt-4">
             <Text className="text-sm text-[#888]">Chưa có tài khoản? </Text>
-            <TouchableOpacity
-              onPress={() => router.push("/(auth)/register")}
-            >
+            <TouchableOpacity onPress={() => router.push("/(auth)/register")}>
               <Text className="text-sm text-[#4285F4] font-bold">
                 Đăng ký tại đây
               </Text>
