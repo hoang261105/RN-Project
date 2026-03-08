@@ -22,12 +22,14 @@ export default function OnboardingScreen() {
     <SafeAreaView className="flex-1 bg-white">
       <StatusBar barStyle="light-content" />
 
-      {/* 1. Ảnh trên cùng */}
       <View className="flex-[3] bg-black">
-        <Image source={headerImage} className="w-full h-full" resizeMode="cover" />
+        <Image
+          source={headerImage}
+          className="w-full h-full"
+          resizeMode="cover"
+        />
       </View>
 
-      {/* 2. Nội dung */}
       <View
         className={`flex-[2] bg-white rounded-t-[30px] -mt-10 pt-6 px-6 ${
           Platform.OS === "ios" ? "shadow-lg shadow-black/10" : "elevation-10"
