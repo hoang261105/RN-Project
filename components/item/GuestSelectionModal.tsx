@@ -107,7 +107,6 @@ export default function GuestSelectionModal({
                 Select Guest
               </Text>
 
-              {/* Hàng Người lớn */}
               <GuestCounterRow
                 title="Adults"
                 subtitle="Ages 14 or above"
