@@ -50,7 +50,6 @@ export default function OnboardingScreen() {
           readable content.
         </Text>
 
-        {/* Thanh nút */}
         <View className="flex-row justify-between items-center pb-8">
           <TouchableOpacity onPress={() => router.push("/(auth)/login")}>
             <Text className="text-lg text-gray-500 font-medium">Bỏ qua</Text>
