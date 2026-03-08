@@ -35,7 +35,6 @@ export default function OnboardingScreen() {
           Platform.OS === "ios" ? "shadow-lg shadow-black/10" : "elevation-10"
         }`}
       >
-        {/* Dấu chấm Paging */}
         <View className="flex-row justify-center items-center">
           <View className="w-5 h-[6px] bg-blue-600 rounded-full mx-1" />
           <View className="w-[6px] h-[6px] bg-gray-300 rounded-full mx-1" />
