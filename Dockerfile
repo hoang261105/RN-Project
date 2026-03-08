@@ -1,4 +1,3 @@
-# Stage 1: build
 FROM node:18 as build
 
 WORKDIR /app
@@ -11,7 +10,6 @@ COPY . .
 
 RUN npx expo export --platform web
 
-# Stage 2: nginx serve
 FROM nginx:alpine
 
 COPY --from=build /app/dist /usr/share/nginx/html
