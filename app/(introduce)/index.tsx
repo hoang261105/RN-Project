@@ -41,12 +41,10 @@ export default function OnboardingScreen() {
           <View className="w-[6px] h-[6px] bg-gray-300 rounded-full mx-1" />
         </View>
 
-        {/* Tiêu đề */}
         <Text className="text-[28px] font-bold text-gray-900 text-center mt-8">
           Easy way to book hotels with us
         </Text>
 
-        {/* Mô tả */}
         <Text className="text-[16px] text-gray-500 text-center mt-4 mb-10">
           It is a long established fact that a reader will be distracted by the
           readable content.
