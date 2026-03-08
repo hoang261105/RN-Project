@@ -158,7 +158,6 @@ export default function LoginScreen() {
             </TouchableOpacity>
           </View>
 
-          {/* Divider */}
           <View className="flex-row items-center justify-center mb-6">
             <View className="flex-1 h-[1px] bg-[#E0E0E0]" />
             <Text className="mx-3 text-sm text-[#AAA]">Hoặc đăng nhập với</Text>
