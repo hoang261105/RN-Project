@@ -197,13 +197,7 @@ export default function LoginScreen() {
               </TouchableOpacity>
             </View>
           </View>
-          {/* {error.email ? <Text className="text-red-500 mt-1">{error.email}</Text> : null} */}
 
-          {/* Password */}
-
-          {/* {error.password ? <Text className="text-red-500 mt-1">{error.password}</Text> : null} */}
-
-          {/* Forgot password */}
           <TouchableOpacity onPress={hanldeForgotPassword}>
             <Text className="text-sm text-[#4285F4] text-right mb-6">
               Quên mật khẩu?
