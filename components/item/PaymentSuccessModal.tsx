@@ -8,7 +8,7 @@ export default function PaymentSuccessModal({
 }: {
   isVisible: boolean;
   onClose: () => void;
-}){
+}) {
   return (
     <Modal
       animationType="slide"
@@ -18,7 +18,10 @@ export default function PaymentSuccessModal({
     >
       <Pressable className="flex-1 justify-end bg-black/50">
         <Pressable className="bg-white rounded-t-3xl shadow-lg">
-          <SafeAreaView edges={["bottom"]} className="items-center px-6 pt-4 pb-8">
+          <SafeAreaView
+            edges={["bottom"]}
+            className="items-center px-6 pt-4 pb-8"
+          >
             {/* Grabber */}
             <View className="w-12 h-1.5 bg-gray-300 rounded-full self-center mb-5" />
 
@@ -40,7 +43,6 @@ export default function PaymentSuccessModal({
               Your booking has been confirmed
             </Text>
 
-            {/* Nút Back to Home */}
             <TouchableOpacity
               className="bg-blue-600 py-4 rounded-lg mt-8 w-full"
               onPress={onClose}
@@ -54,4 +56,4 @@ export default function PaymentSuccessModal({
       </Pressable>
     </Modal>
   );
-};
+}
