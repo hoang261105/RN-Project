@@ -22,7 +22,6 @@ export default function PaymentSuccessModal({
             edges={["bottom"]}
             className="items-center px-6 pt-4 pb-8"
           >
-            {/* Grabber */}
             <View className="w-12 h-1.5 bg-gray-300 rounded-full self-center mb-5" />
 
             <View className="w-24 h-24 rounded-full bg-blue-100 items-center justify-center">
