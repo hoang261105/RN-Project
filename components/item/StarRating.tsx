@@ -1,14 +1,13 @@
 import { FontAwesome } from "@expo/vector-icons";
 import { View } from "react-native";
 
-// --- Component con: Hiển thị 5 sao ---
 export default function StarRating({ rating, size = 16 }: any) {
   const totalStars = 5;
   return (
     <View className="flex-row">
       {[...Array(totalStars)].map((_, index) => {
         const starIndex = index + 1;
-        const filled = Math.min(Math.max(rating - index, 0), 1); 
+        const filled = Math.min(Math.max(rating - index, 0), 1);
 
         return (
           <View
@@ -22,7 +21,7 @@ export default function StarRating({ rating, size = 16 }: any) {
                 style={{
                   position: "absolute",
                   overflow: "hidden",
-                  width: `${filled * 100}%`, 
+                  width: `${filled * 100}%`,
                 }}
               >
                 <FontAwesome name="star" size={size} color="#F59E0B" />
@@ -33,4 +32,4 @@ export default function StarRating({ rating, size = 16 }: any) {
       })}
     </View>
   );
-};
+}
