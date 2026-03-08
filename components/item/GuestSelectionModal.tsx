@@ -111,7 +111,7 @@ export default function GuestSelectionModal({
                 title="Adults"
                 subtitle="Ages 14 or above"
                 count={adults}
-                onDecrement={() => setAdults(Math.max(1, adults - 1))} // Người lớn ít nhất là 1
+                onDecrement={() => setAdults(Math.max(1, adults - 1))}
                 onIncrement={() => setAdults(adults + 1)}
                 decrementDisabled={adults === 1}
               />
