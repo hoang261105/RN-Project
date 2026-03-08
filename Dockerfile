@@ -1,18 +1,20 @@
-# Stage 1: Build React
-FROM node:18 AS build
+# Stage 1: build
+FROM node:18 as build
 
 WORKDIR /app
 
 COPY package*.json ./
+
 RUN npm install --legacy-peer-deps
 
 COPY . .
-RUN npm run build
 
-# Stage 2: Run with Nginx
+RUN npx expo export --platform web
+
+# Stage 2: nginx serve
 FROM nginx:alpine
 
-COPY --from=build /app/build /usr/share/nginx/html
+COPY --from=build /app/dist /usr/share/nginx/html
 
 EXPOSE 80
 
