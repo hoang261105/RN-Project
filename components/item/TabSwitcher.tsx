@@ -1,7 +1,6 @@
 import { Status } from "@/interface/booking";
 import { StyleSheet, Text, TouchableOpacity, View } from "react-native";
 
-// --- Component con: Chuyển Tab ---
 const TabSwitcher = ({
   activeTab,
   setActiveTab,
@@ -23,10 +22,10 @@ const TabSwitcher = ({
               {status === Status.PENDING
                 ? "Đang chờ"
                 : status === Status.CONFIRMED
-                ? "Đã đặt"
-                : status === Status.CANCELLED
-                ? "Đã hủy"
-                : "Đã trả phòng"}
+                  ? "Đã đặt"
+                  : status === Status.CANCELLED
+                    ? "Đã hủy"
+                    : "Đã trả phòng"}
             </Text>
           </TouchableOpacity>
         );
